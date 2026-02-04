@@ -1,13 +1,12 @@
 import SeverityBadge from "./SeverityBadge";
-import { systemAnomalies } from "../data/systemDummyData";
 import SystemLineChart from "./SystemLineChart";
 
+const SystemMonitoringPanel = ({ data }) => {
+  // Use real data or fallback to empty array
+  const anomalies = data?.details || [];
 
-const SystemMonitoringPanel = () => {
   return (
     <div className="bg-white rounded-xl shadow-lg p-5">
-
-      {/* Title */}
       <h3 className="font-semibold text-lg text-gray-800">
         System Monitoring
       </h3>
@@ -15,68 +14,50 @@ const SystemMonitoringPanel = () => {
         CPU, Memory, Resource Usage
       </p>
 
-      {/* GRAPH PLACEHOLDER (will replace with real chart later) */}
+      {/* Pass data to chart if your chart component supports it */}
       <SystemLineChart />
 
-
-      {/* ROWS BELOW GRAPH */}
       <div className="mt-4">
-
-
         <h4 className="text-sm font-semibold text-gray-800 mb-2">
           Recent Anomalies
         </h4>
 
-        <table className="w-full text-sm">
-
-          <thead>
-            <tr className="bg-gray-100 text-gray-900 font-bold">
-              <th className="py-2 px-1 text-left">Time</th>
-              <th className="py-2 px-1 text-left">Type</th>
-              <th className="py-2 px-1 text-left">Severity</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {systemAnomalies.slice(0, 2).map((row, i) => (
-              <tr
-                key={i}
-                className="bg-white hover:bg-blue-50"
-              >
-
-                {/* Time */}
-                <td className="py-2 px-1 text-gray-900 font-semibold">
-                  {row.time}
-                </td>
-
-                {/* Type */}
-                <td className="py-2 px-1 text-gray-800 font-semibold">
-                  {row.predicted_status}
-                </td>
-
-                {/* Severity */}
-                <td className="py-2 px-1">
-                  <span
-                    className={
-                      row.severity === "High"
-                        ? "text-red-600 font-bold"
-                        : row.severity === "Medium"
-                        ? "text-orange-500 font-bold"
-                        : "text-blue-600 font-bold"
-                    }
-                  >
-                    {row.severity}
-                  </span>
-                </td>
-
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-gray-100 text-gray-900 font-bold">
+                <th className="py-2 px-1 text-left">Time</th>
+                <th className="py-2 px-1 text-left">Type</th>
+                <th className="py-2 px-1 text-left">Severity</th>
               </tr>
-            ))}
-          </tbody>
+            </thead>
+            <tbody>
+              {/* RENDER REAL DATA */}
+              {anomalies.slice(0, 3).map((row, i) => (
+                <tr key={i} className="bg-white hover:bg-blue-50 border-b last:border-0">
+                  <td className="py-2 px-1 text-gray-900 font-semibold">
+                    {row.time || "N/A"}
+                  </td>
+                  <td className="py-2 px-1 text-gray-800 font-semibold">
+                    {row.predicted_status || "Anomaly"}
+                  </td>
+                  <td className="py-2 px-1">
+                    <SeverityBadge level={row.severity || "Medium"} />
+                  </td>
+                </tr>
+              ))}
 
-        </table>
-
+              {anomalies.length === 0 && (
+                <tr>
+                  <td colSpan="3" className="py-4 text-center text-gray-400">
+                    No anomalies detected
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-
     </div>
   );
 };

@@ -1,55 +1,80 @@
-import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Server, ShieldAlert, Users, UploadCloud, LogOut } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { LayoutDashboard, Server, Shield, Users, X, LogOut } from "lucide-react";
 
-const Sidebar = () => {
-  const navItems = [
-    { path: "/", label: "New Analysis", icon: <UploadCloud size={20} /> },
-    { path: "/dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
-    { path: "/system", label: "System Monitor", icon: <Server size={20} /> },
-    { path: "/network", label: "Network Security", icon: <ShieldAlert size={20} /> },
-    { path: "/login", label: "User Access", icon: <Users size={20} /> },
+const Sidebar = ({ isOpen, onClose }) => {
+  const location = useLocation();
+  
+  // Styling constants
+  const activeClass = "bg-blue-600 shadow-lg text-white";
+  const inactiveClass = "text-slate-300 hover:bg-white/10 hover:text-white";
+
+  const menuItems = [
+    { name: "Dashboard", path: "/", icon: LayoutDashboard },
+    { name: "System Monitor", path: "/system", icon: Server },
+    { name: "Network Security", path: "/network", icon: Shield },
+    { name: "User Access", path: "/login", icon: Users },
   ];
 
   return (
-    <aside className="fixedPc left-0 top-0 h-screen w-64 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-50">
-      {/* Brand Header */}
-      <div className="h-16 flex items-center px-6 border-b border-slate-800 bg-slate-950">
-        <div className="text-xl font-bold tracking-wide text-white">
-          <span className="text-blue-500">AI</span> Sentinel
+    <>
+      {/* Mobile Overlay (Dark background when menu is open) */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Sidebar Container */}
+      <div className={`
+        fixed inset-y-0 left-0 z-50 w-64 bg-[#0B1437] text-white transition-transform duration-300 ease-in-out
+        md:translate-x-0 md:static md:inset-auto
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}
+      `}>
+        
+        {/* Logo Area */}
+        <div className="flex items-center justify-between p-6 border-b border-white/10">
+          <h1 className="text-2xl font-bold tracking-wide">
+            AI <span className="text-blue-500">Sentinel</span>
+          </h1>
+          {/* Close Button (Mobile Only) */}
+          <button onClick={onClose} className="md:hidden text-gray-400 hover:text-white">
+            <X size={24} />
+          </button>
+        </div>
+
+        {/* Navigation Links */}
+        <nav className="mt-8 px-4 space-y-2 flex-1">
+          {menuItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            const Icon = item.icon;
+            
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => onClose()} // Close menu when link is clicked
+                className={`
+                  flex items-center gap-4 px-4 py-3 rounded-xl transition-all font-medium
+                  ${isActive ? activeClass : inactiveClass}
+                `}
+              >
+                <Icon size={20} />
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Logout (Optional Footer) */}
+        <div className="p-4 mt-auto border-t border-white/10">
+            <button className="flex items-center gap-4 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-white/5 w-full rounded-xl transition-all">
+                <LogOut size={20} />
+                <span>Sign Out</span>
+            </button>
         </div>
       </div>
-
-      {/* Navigation Links */}
-      <nav className="flex-1 py-6 px-3 space-y-1">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            end={item.path === "/"} 
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 group ${
-                isActive
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-900/50"
-                  : "hover:bg-slate-800 hover:text-white"
-              }`
-            }
-          >
-            <span className={({ isActive }) => isActive ? "text-white" : "text-slate-400 group-hover:text-white"}>
-              {item.icon}
-            </span>
-            <span className="font-medium text-sm">{item.label}</span>
-          </NavLink>
-        ))}
-      </nav>
-
-      {/* Footer */}
-      <div className="p-4 border-t border-slate-800">
-        <button className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-400 hover:bg-slate-800 rounded-lg transition-colors">
-          <LogOut size={18} />
-          <span>Sign Out</span>
-        </button>
-      </div>
-    </aside>
+    </>
   );
 };
 

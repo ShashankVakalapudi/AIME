@@ -1,38 +1,48 @@
-import { useLocation } from "react-router-dom";
+import { Menu, Search, Bell, UserCircle } from "lucide-react";
 
-const Navbar = () => {
-  const location = useLocation();
-
-  // Dynamic Title Logic
-  const getPageTitle = (path) => {
-    switch (path) {
-      case "/": return "Upload Dataset";
-      case "/dashboard": return "Security Overview";
-      case "/system": return "System Monitoring";
-      case "/network": return "Network Intrusion Detection";
-      case "/login": return "Authentication Logs";
-      default: return "Dashboard";
-    }
-  };
-
+const Navbar = ({ onMenuClick }) => {
   return (
-    <div className="bg-white border-b border-slate-200 px-8 h-20 flex justify-between items-center sticky top-0 z-40 shadow-sm">
+    <div className="bg-white rounded-xl shadow-sm px-6 py-4 flex items-center justify-between mb-8 sticky top-4 z-30">
       
-      {/* Page Title */}
-      <h2 className="text-2xl font-bold text-slate-800 tracking-tight">
-        {getPageTitle(location.pathname)}
-      </h2>
-
-      {/* Right Side: Admin User Only */}
+      {/* Left Side: Menu Button & Title */}
       <div className="flex items-center gap-4">
-        <div className="text-right hidden md:block">
-          <p className="text-sm font-bold text-slate-700">Admin User</p>
-          <p className="text-xs text-slate-500">Security Analyst</p>
-        </div>
-        <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-full flex items-center justify-center font-bold text-lg shadow-md border-2 border-white ring-2 ring-slate-100">
-          VA
+        <button 
+          onClick={onMenuClick}
+          className="p-2 -ml-2 rounded-lg hover:bg-gray-100 md:hidden text-gray-600 transition-colors"
+        >
+          <Menu size={24} />
+        </button>
+        
+        <h2 className="text-xl font-bold text-gray-800 hidden sm:block">
+          Security Dashboard
+        </h2>
+        {/* Mobile Title (Smaller) */}
+        <h2 className="text-lg font-bold text-gray-800 sm:hidden">
+          Dashboard
+        </h2>
+      </div>
+
+      {/* Right Side: Profile & Actions */}
+      <div className="flex items-center gap-4">
+        
+        <button className="p-2 text-gray-400 hover:text-blue-600 transition-colors relative">
+            <Bell size={20} />
+            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+
+        <div className="h-8 w-[1px] bg-gray-200 mx-1 hidden sm:block"></div>
+
+        <div className="flex items-center gap-3">
+          <div className="text-right hidden md:block">
+            <p className="text-sm font-bold text-gray-900">Admin User</p>
+            <p className="text-xs text-gray-500">Security Analyst</p>
+          </div>
+          <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold border-2 border-white shadow-sm">
+             VA
+          </div>
         </div>
       </div>
+
     </div>
   );
 };
