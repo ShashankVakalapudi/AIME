@@ -1,90 +1,37 @@
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  CartesianGrid,
+  AreaChart, Area, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid
 } from "recharts";
 
-import { useEffect, useState } from "react";
-
-// Dummy live data generator (later replace with backend API)
-const generateData = () => {
-  const time = new Date().toLocaleTimeString();
-
-  return {
-    time,
-    cpu: Math.floor(40 + Math.random() * 60),
-    memory: Math.floor(50 + Math.random() * 40),
-    storage: Math.floor(60 + Math.random() * 30),
-  };
-};
-
-const SystemLineChart = () => {
-  const [data, setData] = useState([generateData()]);
-
-  // Update every 3 seconds (simulate live data)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setData((prev) => {
-        const newData = [...prev, generateData()];
-
-        // Keep only last 8 points
-        if (newData.length > 8) newData.shift();
-
-        return newData;
-      });
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
+const SystemLineChart = ({ data }) => {
+  const chartData = data && data.length > 0 ? data : [];
 
   return (
-    <div className="w-full h-40">
-
+    <div className="h-48 w-full">
       <ResponsiveContainer width="100%" height="100%">
-
-        <LineChart data={data}>
-
-          <CartesianGrid strokeDasharray="3 3" />
-
-          <XAxis dataKey="time" fontSize={10} />
-          <YAxis domain={[0, 100]} />
-
-          <Tooltip />
-          <Legend />
-
-          <Line
-            type="monotone"
-            dataKey="cpu"
-            stroke="#2563eb"
-            strokeWidth={2}
-            name="CPU"
-          />
-
-          <Line
-            type="monotone"
-            dataKey="memory"
-            stroke="#f97316"
-            strokeWidth={2}
-            name="Memory"
-          />
-
-          <Line
-            type="monotone"
-            dataKey="storage"
-            stroke="#16a34a"
-            strokeWidth={2}
-            name="Storage"
-          />
-
-        </LineChart>
-
+        <AreaChart data={chartData}>
+          <defs>
+            <linearGradient id="colorCpu" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+            </linearGradient>
+            <linearGradient id="colorStorage" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
+              <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+          <XAxis dataKey="time" fontSize={10} tickLine={false} axisLine={false} />
+          <YAxis fontSize={10} tickLine={false} axisLine={false} />
+          <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+          
+          {/* LEGEND MOVED TO BOTTOM */}
+          <Legend verticalAlign="bottom" height={36}/>
+          
+          <Area type="monotone" dataKey="cpu" stroke="#3b82f6" fillOpacity={1} fill="url(#colorCpu)" name="CPU Usage" />
+          <Area type="monotone" dataKey="storage" stroke="#8b5cf6" fillOpacity={0.6} fill="url(#colorStorage)" name="Storage" />
+          <Line type="monotone" dataKey="memory" stroke="#10b981" strokeWidth={2} dot={false} name="Memory" />
+        </AreaChart>
       </ResponsiveContainer>
-
     </div>
   );
 };

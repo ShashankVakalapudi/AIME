@@ -1,0 +1,15 @@
+# Ignore ML models
+backend/models/
+
+# Ignore uploads
+backend/uploads/
+
+# Ignore datasets and binaries
+*.csv
+*.pkl
+
+# Node modules (frontend)
+node_modules/
+
+# Python cache
+__pycache__/

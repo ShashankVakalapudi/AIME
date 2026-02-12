@@ -1,20 +1,13 @@
-const PanelCard = ({ title, subtitle }) => {
+const PanelCard = ({ title, subtitle, children }) => {
   return (
-    <div className="bg-white rounded-xl shadow-lg p-5 border-t-4 border-blue-500">
-
-      <h3 className="font-semibold text-lg text-gray-800 mb-1">
-        {title}
-      </h3>
-
-      <p className="text-sm text-gray-600">
-        {subtitle}
-      </p>
-
-      {/* Chart placeholder */}
-      <div className="mt-4 h-32 bg-blue-50 rounded flex items-center justify-center text-blue-500 font-medium text-sm">
-        Chart Area
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-full">
+      <div className="px-6 py-5 border-b border-slate-100">
+        <h3 className="font-bold text-lg text-slate-800">{title}</h3>
+        {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
       </div>
-
+      <div className="p-6 flex-1">
+        {children}
+      </div>
     </div>
   );
 };

@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+/* Ensure no global styles are flipping the layout */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevents double scrollbars */
+}
