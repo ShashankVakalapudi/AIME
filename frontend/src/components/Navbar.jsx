@@ -38,7 +38,7 @@ const Navbar = ({ onMenuClick }) => {
             <p className="text-xs text-gray-500">Security Analyst</p>
           </div>
           <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold border-2 border-white shadow-sm">
-             VA
+             A
           </div>
         </div>
       </div>

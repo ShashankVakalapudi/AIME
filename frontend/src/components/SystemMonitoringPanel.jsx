@@ -1,59 +1,49 @@
-import SeverityBadge from "./SeverityBadge";
 import SystemLineChart from "./SystemLineChart";
 
-const SystemMonitoringPanel = ({ data }) => {
-  // Use real data or fallback to empty array
-  const anomalies = data?.details || [];
+const SystemMonitoringPanel = ({ history }) => {
+  // ✅ Updated Color Logic
+  const getSeverityColor = (level) => {
+    switch (level?.toLowerCase()) {
+        case 'critical': return 'text-red-700';
+        case 'high':     return 'text-red-500';
+        case 'moderate': return 'text-orange-500'; // Orange
+        case 'medium':   return 'text-orange-500';
+        case 'low':      return 'text-green-600';  // Green
+        default:         return 'text-gray-600';
+    }
+  };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-5">
-      <h3 className="font-semibold text-lg text-gray-800">
-        System Monitoring
-      </h3>
-      <p className="text-sm text-gray-500 mb-4">
-        CPU, Memory, Resource Usage
-      </p>
-
-      {/* Pass data to chart if your chart component supports it */}
-      <SystemLineChart />
-
-      <div className="mt-4">
-        <h4 className="text-sm font-semibold text-gray-800 mb-2">
-          Recent Anomalies
-        </h4>
-
-        <div className="overflow-x-auto">
+    <div className="bg-white rounded-xl shadow-lg p-5 flex flex-col h-full">
+      <h3 className="font-semibold text-lg text-gray-800">System Monitoring</h3>
+      <p className="text-sm text-gray-500 mb-4">CPU, Memory, Storage Usage</p>
+      <SystemLineChart data={history} />
+      <div className="mt-6 flex-1 min-h-0">
+        <h4 className="text-sm font-semibold text-gray-800 mb-2">Recent Anomalies</h4>
+        <div className="overflow-y-auto max-h-60 border border-gray-100 rounded-lg">
           <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-100 text-gray-900 font-bold">
-                <th className="py-2 px-1 text-left">Time</th>
-                <th className="py-2 px-1 text-left">Type</th>
-                <th className="py-2 px-1 text-left">Severity</th>
+            <thead className="sticky top-0 bg-gray-50">
+              <tr className="text-gray-900 font-bold">
+                <th className="py-2 px-3 text-left">Time</th>
+                <th className="py-2 px-3 text-left">Type</th>
+                <th className="py-2 px-3 text-left">Severity</th>
               </tr>
             </thead>
             <tbody>
-              {/* RENDER REAL DATA */}
-              {anomalies.slice(0, 3).map((row, i) => (
-                <tr key={i} className="bg-white hover:bg-blue-50 border-b last:border-0">
-                  <td className="py-2 px-1 text-gray-900 font-semibold">
-                    {row.time || "N/A"}
-                  </td>
-                  <td className="py-2 px-1 text-gray-800 font-semibold">
-                    {row.predicted_status || "Anomaly"}
-                  </td>
-                  <td className="py-2 px-1">
-                    <SeverityBadge level={row.severity || "Medium"} />
+              {[...history].reverse().slice(0, 10).map((row, i) => (
+                row.predicted_status && (
+                <tr key={i} className="bg-white hover:bg-blue-50 border-b last:border-0 animate-fadeIn">
+                  <td className="py-2 px-3 text-gray-900 font-semibold">{row.time}</td>
+                  <td className="py-2 px-3 text-gray-800 font-semibold">{row.predicted_status}</td>
+                  <td className="py-2 px-3">
+                    <span className={`font-bold ${getSeverityColor(row.severity)}`}>
+                        {row.severity || "High"}
+                    </span>
                   </td>
                 </tr>
+                )
               ))}
-
-              {anomalies.length === 0 && (
-                <tr>
-                  <td colSpan="3" className="py-4 text-center text-gray-400">
-                    No anomalies detected
-                  </td>
-                </tr>
-              )}
+              {history.length === 0 && <tr><td colSpan="3" className="py-4 text-center text-gray-400">Waiting for data...</td></tr>}
             </tbody>
           </table>
         </div>
@@ -61,5 +51,4 @@ const SystemMonitoringPanel = ({ data }) => {
     </div>
   );
 };
-
 export default SystemMonitoringPanel;
