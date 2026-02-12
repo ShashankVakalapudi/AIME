@@ -1,5 +1,4 @@
-# Ignore ML models
-backend/models/
+
 
 # Ignore uploads
 backend/uploads/
