@@ -1,14 +1,10 @@
-# Ignore ML models
-backend/models/
-
-# Ignore uploads
+# Ignore uploads folder
 backend/uploads/
 
-# Ignore datasets and binaries
+# Ignore all CSV files
 *.csv
-*.pkl
 
-# Node modules (frontend)
+# Ignore node modules
 node_modules/
 
 # Python cache
